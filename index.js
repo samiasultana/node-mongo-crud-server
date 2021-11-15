@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const { MongoClient, CURSOR_FLAGS } = require('mongodb');
 const cors = require('cors');
 
 const app = express();
@@ -46,14 +46,25 @@ async function run() {
     // const result = await usersCollection.insertOne(doc);
     // console.log(`A document was inserted with the _id: ${result.insertedId}`);
 
+    // Get API
+    app.get('/users', async(req,res)=>{
+      const cursor = usersCollection.find({});
+      const users=await cursor.toArray();
+      res.send(users);
+    })
+     
     // POST API
     app.post('/users', async (req, res) => {
-      console.log("Hitting the post", req.body)
-      res.send('POST request to the homepage')
+      const newUser=req.body;
+      const result = await usersCollection.insertOne(newUser);
+      console.log("got a new user", req.body);
+      console.log("added user", result);
+      // res.send('POST request to the homepage')
+      res.json(result);
     })
   }
   finally {
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
