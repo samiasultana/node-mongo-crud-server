@@ -1,14 +1,14 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const cors = require('cors');
 
-var cors = require('cors');
 const app = express();
-
+const port = process.env.PORT || 5000;
+ 
 // CORS from Middleware from Resources from expressjs
 app.use(cors());
 app.use(express.json());
 
-const port = process.env.PORT || 5000;
 
 //mongodb user id: mydbuser1, pass: TBJZUIgZ9bB7UAan
 
@@ -51,7 +51,8 @@ async function run() {
       console.log("Hitting the post", req.body)
       res.send('POST request to the homepage')
     })
-  } finally {
+  }
+  finally {
     await client.close();
   }
 }
