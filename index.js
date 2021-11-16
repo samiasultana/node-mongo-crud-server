@@ -55,6 +55,13 @@ async function run() {
       res.send(users);
     })
 
+    app.get("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const user = await usersCollection.findOne(query);
+      console.log("Load users with ID:", id);
+      res.send(user)
+    })
     // POST API
     app.post('/users', async (req, res) => {
       const newUser = req.body;
@@ -70,7 +77,7 @@ async function run() {
       const id = req.params.id;
       // delete
       const query = { _id: ObjectId(id) };
-      const result = await usersCollection.deleteOne(query); 
+      const result = await usersCollection.deleteOne(query);
       console.log("deleted", result);
       res.json(result);
     })
