@@ -1,10 +1,12 @@
 const express = require('express');
 const { MongoClient, CURSOR_FLAGS } = require('mongodb');
 const cors = require('cors');
+// app delete import
+const ObjectId = require("mongodb").ObjectId;
 
 const app = express();
 const port = process.env.PORT || 5000;
- 
+
 // CORS from Middleware from Resources from expressjs
 app.use(cors());
 app.use(express.json());
@@ -47,19 +49,29 @@ async function run() {
     // console.log(`A document was inserted with the _id: ${result.insertedId}`);
 
     // Get API
-    app.get('/users', async(req,res)=>{
+    app.get('/users', async (req, res) => {
       const cursor = usersCollection.find({});
-      const users=await cursor.toArray();
+      const users = await cursor.toArray();
       res.send(users);
     })
-     
+
     // POST API
     app.post('/users', async (req, res) => {
-      const newUser=req.body;
+      const newUser = req.body;
       const result = await usersCollection.insertOne(newUser);
       console.log("got a new user", req.body);
       console.log("added user", result);
       // res.send('POST request to the homepage')
+      res.json(result);
+    });
+
+    // DELETE API
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      // delete
+      const query = { _id: ObjectId(id) };
+      const result = await usersCollection.deleteOne(query); 
+      console.log("deleted", result);
       res.json(result);
     })
   }
